@@ -38,6 +38,8 @@
             justify-content: center;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
+			box-sizing: border-box;
+			-webkit-backface-visibility: hidden;
         }
 
         .ui-round { border-radius: 8px; }
@@ -347,42 +349,46 @@
         window.addEventListener('touchend', () => isDragging = false);
 
         downloadBtn.addEventListener('click', async (e) => {
-            if(!hasImage) return;
-            e.stopPropagation();
-            downloadBtn.disabled = true;
-            downloadLoader.style.display = 'inline-block';
-            
-            canvasContainer.classList.remove('ui-round');
-            
-            try {
-                const rect = canvasContainer.getBoundingClientRect();
-                const containerWidth = rect.width;
-                const containerHeight = rect.height;
-                
-                const targetSize = 2048;
-                const currentLargerSide = Math.max(containerWidth, containerHeight);
-                const dynamicScale = targetSize / currentLargerSide;
-
-                const canvas = await html2canvas(canvasContainer, {
-                    useCORS: true,
-                    scale: dynamicScale,
-                    backgroundColor: null,
-                    logging: false,
-                    allowTaint: true
-                });
-
-                const link = document.createElement('a');
-                link.download = `NoBoatNoVote_${new Date().getTime()}.jpg`;
-                link.href = canvas.toDataURL('image/jpg', 1.0);
-                link.click();
-            } catch (err) {
-                console.error("Export failed", err);
-            } finally {
-                canvasContainer.classList.add('ui-round');
-                downloadBtn.disabled = false;
-                downloadLoader.style.display = 'none';
-            }
+    if(!hasImage) return;
+    e.stopPropagation();
+    downloadBtn.disabled = true;
+    downloadLoader.style.display = 'inline-block';
+    
+    canvasContainer.style.borderRadius = '0';
+    canvasContainer.style.boxShadow = 'none';
+    
+    try {
+        
+        const width = Math.floor(canvasContainer.offsetWidth);
+        const height = Math.floor(canvasContainer.offsetHeight);
+        
+        const canvas = await html2canvas(canvasContainer, {
+            useCORS: true,
+            scale: 5.25,
+            backgroundColor: "#ffffff",
+            logging: false,
+            width: width,
+            height: height,
+            scrollX: -window.scrollX,
+            scrollY: -window.scrollY,
+            windowWidth: document.documentElement.offsetWidth,
+            windowHeight: document.documentElement.offsetHeight
         });
+
+        const link = document.createElement('a');
+        link.download = `NoBoatNoVote_${new Date().getTime()}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 1.0);
+        link.click();
+    } catch (err) {
+        console.error("Export failed", err);
+    } finally {
+        
+        canvasContainer.style.borderRadius = ''; 
+        canvasContainer.style.boxShadow = '';
+        downloadBtn.disabled = false;
+        downloadLoader.style.display = 'none';
+    }
+});
 
         
         window.onload = () => setRatio('1-1');
@@ -390,6 +396,7 @@
 </body>
 
 </html>
+
 
 
 
