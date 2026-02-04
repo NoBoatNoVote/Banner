@@ -162,7 +162,7 @@
                             <label class="text-sm font-bold text-gray-700 uppercase">জুম কন্ট্রোল</label>
                             <span id="zoomVal" class="text-xs font-mono text-[#dc2626] bg-[#fee2e2] px-2 py-0.5 rounded">100%</span>
                         </div>
-                        <input type="range" id="zoomSlider" min="0.1" max="5" step="0.01" value="1" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#dc2626]">
+                        <input type="range" id="zoomSlider" min="0.1" max="5" step="0.01" value="1" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#dc2626]" disabled>
                     </div>
                 </div>
 
@@ -270,6 +270,9 @@
                     displayImage.classList.remove('hidden');
                     placeholderText.classList.add('hidden');
                     hasImage = true;
+					zoomSlider.disabled = false;
+            		zoomSlider.classList.remove('cursor-not-allowed', 'accent-gray-400');
+            		zoomSlider.classList.add('cursor-pointer', 'accent-[#dc2626]');
                     canvasContainer.style.cursor = 'default';
                     displayImage.onload = resetImagePosition;
                 };
@@ -387,6 +390,7 @@
 </body>
 
 </html>
+
 
 
 
